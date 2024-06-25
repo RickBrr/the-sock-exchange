@@ -48,9 +48,7 @@ function App() {
             <div className="card-container">
               <Sock data={sock_data} />
             </div>
-            <div>
-              <Footer environment="DEVELOPMENT" />
-            </div>
+            <Footer environment="DEVELOPMENT" />
           </div>
         </div>
       </main>
