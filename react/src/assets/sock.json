@@ -1,5 +1,5 @@
 [{
-    "id": "1",
+    "_id": "1",
     "sockDetails": {
         "size": "Large",
         "color": "Yellow",
@@ -16,7 +16,7 @@
     "addedTimestamp": "2024-01-26T20:53:12.519940"
 },
 {
-    "id": "2",
+    "_id": "2",
     "sockDetails": {
         "size": "Small",
         "color": "Red",
@@ -33,7 +33,7 @@
     "addedTimestamp": "2024-01-27T20:53:12.519940"
 },
 {
-    "id": "3",
+    "_id": "3",
     "sockDetails": {
         "size": "Medium",
         "color": "Blue",
