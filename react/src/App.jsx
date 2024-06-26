@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Search from "./components/Search";
 import Feature from "./components/Feature";
 import promo_feature from "./assets/promo.json";
+import React, { useState, useEffect } from "react";
 
 function App() {
 
@@ -47,17 +48,18 @@ function App() {
           <div className="row">
             Both socks and space rockets 🚀 will take you to new heights, but only one will get cold feet!
             <h4>Featured</h4>
-            <div className="card-container" style={{display:"flex", flexWrap: 'wrap', gap:"20px"}}>
+            <div className="card-container d-flex flex-row justify-content-start" style={{ gap: "20px", padding: "15px" }}>
               {
                 promo_feature.map((promo) => (
-                  <Feature data={promo} />))
+                  <Feature key={promo.id} data={promo} />))
               }
             </div>
+            <hr></hr>
             <div className="card-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-            {
-              sock_data.map((sock) => (
-              <Sock key={sock.id} data={sock} />))
-            }
+              {
+                sock_data.map((sock) => (
+                <Sock key={sock.id} data={sock} />))
+              }
             </div>
             <Footer environment="DEVELOPMENT" />
           </div>
