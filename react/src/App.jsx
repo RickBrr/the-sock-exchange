@@ -9,15 +9,19 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Featured from "./components/Featured";
 import AddSock from "./components/AddSock";
+import RequireAuth from "./components/RequireAuth";
+import LoginForm from "./components/LoginForm";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Link
 } from "react-router-dom";
+import {AuthProvider} from "./hooks/AuthContext";
 
 function App() {
   const [data, setData] = useState([]);
+  const [page, setPage] = useState(1); // State to store the current page number
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -33,7 +37,7 @@ function App() {
     };
 
     fetchData();
-  }, []);
+  }, [page]);
 
   const handleDelete = async (sockId) => {
     try {
@@ -88,11 +92,18 @@ function App() {
               Both socks and space rockets 🚀 will take you to new heights, but only one will get cold feet!
               <Featured data={promo_data} />
               <hr></hr>
-              <Routes>
-                <Route exact path="/" element={<Home data={data} handleDelete={handleDelete} />} />
-                <Route path="/about" element={<About />} />
-                <Route path="add" element={<AddSock />} />
-              </Routes>
+              <AuthProvider>
+                <Routes>
+                    <Route exact path="/" element={<Home data={data} handleDelete={handleDelete} page={page} setPage={setPage} />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/add" element={
+                    <RequireAuth>
+                        <AddSock />
+                    </RequireAuth>
+                    } />
+                    <Route path="/Login" element={<LoginForm />} />
+                </Routes>
+              </AuthProvider>
               <footer className={import.meta.env.VITE_ENVIRONMENT === "development" ? "bg-yellow" : import.meta.env.VITE_ENVIRONMENT === "production" ? "bg-green" : ""}>
                 <div><strong>{import.meta.env.VITE_ENVIRONMENT.toUpperCase()}</strong></div>
               </footer>
