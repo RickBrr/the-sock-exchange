@@ -53,34 +53,86 @@ app.get('/socks/:color', async (req, res) => {
     }
 });
 
-app.post('/socks', async (req, res) => {
-    try {
-        // Obligatory reference to POST Malone
-        console.log("If POST Malone were a sock, he'd be the one with the most colorful pattern.");
-        // Simulate creating a user
-        const { username, email } = req.body;
-        if (!username || !email) {
-            // Bad request if username or email is missing
-            return res.status(400).send({ error: 'Username and email are required.' });
-        }
+// app.post('/socks', async (req, res) => {
+//     try {
+//         // Obligatory reference to POST Malone
+//         console.log("If POST Malone were a sock, he'd be the one with the most colorful pattern.");
+//         // Simulate creating a user
+//         const { username, email } = req.body;
+//         if (!username || !email) {
+//             // Bad request if username or email is missing
+//             return res.status(400).send({ error: 'Username and email are required.' });
+//         }
 
-        // Respond with the created user information and a 201 Created status
-        res.status(201).send({
-            status: 'success',
-            location: 'http://localhost:3000/users/1234', // This URL should point to the newly created user
-            message: 'User created successfully.'
-        });
+//         // Respond with the created user information and a 201 Created status
+//         res.status(201).send({
+//             status: 'success',
+//             location: 'http://localhost:3000/users/1234', // This URL should point to the newly created user
+//             message: 'User created successfully.'
+//         });
+//     } catch (err) {
+//         console.error("Error:", err);
+//         res.status(500).send("Hmmm, something smells... No socks for you! ☹");
+//     }
+//});
+
+app.post('/socks/search', async (req, res) => {
+    try {
+        // TODO: Add code that can search MongoDB based on a color value
+        const {searchTerm} = req.body;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        const socks = await collection.find({"sockDetails.color": searchTerm}).toArray();
+        res.json(socks);
+        // from the Search text box.
     } catch (err) {
-        console.error("Error:", err);
-        res.status(500).send("Hmmm, something smells... No socks for you! ☹");
+        console.error('Error:', err);
+        res.status(500).send('Hmm, something doesn\'t smell right... Error searching for socks');
     }
 });
 
+app.post('/socks', async (req, res) => {
+    try {
+        // TODO: Add code that adds a sock when a new sock is posted using the
+        const sock = req.body;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        const result = await collection.insertOne(sock);
+        res.status(201).send(`{"_id":"${result.insertedId}"}`);
+        // Add Sock form.
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).send('Hmm, something doesn\'t smell right... Error adding sock');
+    }
+});
+
+// app.delete('/socks/:id', async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         console.log('Deleting sock with ID:', id);
+//         res.status(200).send('Sock deleted successfully');
+//     } catch (err) {
+//         console.error('Error:', err);
+//         res.status(500).send('Hmm, something doesn\'t smell right... Error deleting sock');
+//     }
+// });
+
 app.delete('/socks/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        console.log('Deleting sock with ID:', id);
-        res.status(200).send('Sock deleted successfully');
+        // TODO: Add code that delete a sock when its delete button is clicked.
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        //const socks = await collection.find({"sockDetails.color": searchTerm}).toArray();
+        const result = await collection.deleteOne({_id: new ObjectId(id)});
+        if (result.deletedCount === 1) {
+            res.status(200).send('Sock deleted successfully');
+        } else {
+            res.status(404).send('Sock not found');
+        }
     } catch (err) {
         console.error('Error:', err);
         res.status(500).send('Hmm, something doesn\'t smell right... Error deleting sock');
