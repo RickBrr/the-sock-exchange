@@ -4,7 +4,7 @@ import Navigator from "./Navigator";
 const Home = (props) => {
     return (
         <>
-            <Navigator />
+            <Navigator setPage={props.setPage} page={props.page}/>
             <div className="card-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
             {
                 props.data.map((sock) => (
